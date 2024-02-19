@@ -3,6 +3,7 @@ using BusinessLogic.Interfaces;
 using DataAccess;
 using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.AspNetCore.Identity;
+using Shop_Api_PV221;
 using Shop_Api_PV221.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -18,6 +19,7 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddDbContext(connStr);
 builder.Services.AddIdentity();
+builder.Services.AddRepositories();
 
 builder.Services.AddAutoMapper();
 builder.Services.AddFluentValidators();
@@ -37,6 +39,8 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
+
+app.UseMiddleware<GlobalErrorHandler>();
 
 app.UseAuthorization();
 
