@@ -39,12 +39,12 @@ namespace BusinessLogic.Services
 
         public void Delete(int id)
         {
-            if (id < 0) throw new HttpException("Id must be positive:)", HttpStatusCode.BadRequest);
+            if (id < 0) throw new HttpException(Errors.IdMustPositive, HttpStatusCode.BadRequest);
 
             // delete product by id
             var product = productsR.GetByID(id);
 
-            if (product == null) throw new HttpException("Product not found.", HttpStatusCode.NotFound);
+            if (product == null) throw new HttpException(Errors.ProductNotFound, HttpStatusCode.NotFound);
 
             productsR.Delete(product);
             productsR.Save();
@@ -58,10 +58,10 @@ namespace BusinessLogic.Services
 
         public ProductDto? Get(int id)
         {
-            if (id < 0) throw new HttpException("Id must be positive:)", HttpStatusCode.BadRequest);
+            if (id < 0) throw new HttpException(Errors.IdMustPositive, HttpStatusCode.BadRequest);
 
             var item = productsR.GetByID(id);
-            if (item == null) throw new HttpException("Product not found.", HttpStatusCode.NotFound);
+            if (item == null) throw new HttpException(Errors.ProductNotFound, HttpStatusCode.NotFound);
 
             // load related entity
             //context.Entry(item).Reference(x => x.Category).Load();
