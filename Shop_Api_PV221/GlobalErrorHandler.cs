@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using FluentValidation;
+using System.Net;
 using System.Text.Json;
 
 namespace Shop_Api_PV221
@@ -22,10 +23,10 @@ namespace Shop_Api_PV221
             {
                 await CreateResponse(context, httpError.Status, httpError.Message);
             }
-            //catch (ValidationException validationError)
-            //{
-            //    await CreateResponse(context, HttpStatusCode.BadRequest, validationError.Message);
-            //}
+            catch (ValidationException validationError)
+            {
+                await CreateResponse(context, HttpStatusCode.BadRequest, validationError.Message);
+            }
             catch (KeyNotFoundException error)
             {
                 await CreateResponse(context, HttpStatusCode.NotFound, error.Message);

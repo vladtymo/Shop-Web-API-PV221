@@ -3,6 +3,7 @@ using BusinessLogic.DTOs;
 using BusinessLogic.Interfaces;
 using DataAccess.Data;
 using DataAccess.Data.Entities;
+using DataAccess.Repositories;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 
@@ -11,19 +12,22 @@ namespace BusinessLogic.Services
     internal class OrdersService : IOrdersService
     {
         private readonly IMapper mapper;
-        private readonly ShopDbContext context;
+        private readonly IRepository<Order> orderR;
+        private readonly IRepository<Product> productR;
         private readonly ICartService cartService;
         private readonly IEmailSender emailSender;
         //private readonly IViewRender viewRender;
 
         public OrdersService(IMapper mapper, 
-                            ShopDbContext context, 
+                            IRepository<Order> orderR,
+                            IRepository<Product> productR,
                             ICartService cartService,
                             //IViewRender viewRender,
                             IEmailSender emailSender)
         {
             this.mapper = mapper;
-            this.context = context;
+            this.orderR = orderR;
+            this.productR = productR;
             this.cartService = cartService;
             this.emailSender = emailSender;
             //this.viewRender = viewRender;
@@ -32,7 +36,7 @@ namespace BusinessLogic.Services
         public async Task Create(string userId)
         {
             var ids = cartService.GetProductIds();
-            var products = context.Products.Where(x => ids.Contains(x.Id)).ToList();
+            var products = productR.Get(x => ids.Contains(x.Id)).ToList();
 
             var order = new Order()
             {
@@ -42,10 +46,10 @@ namespace BusinessLogic.Services
                 TotalPrice = products.Sum(x => x.Price),
             };
 
-            context.Orders.Add(order);
-            context.SaveChanges();
+            orderR.Insert(order);
+            orderR.Save();
 
-            context.Entry(order).Reference(x => x.User).Load();
+            //context.Entry(order).Reference(x => x.User).Load();
 
             // send order summary email
             //var orderSummary = mapper.Map<OrderSummaryModel>(order);
@@ -56,7 +60,7 @@ namespace BusinessLogic.Services
 
         public IEnumerable<OrderDto> GetAllByUser(string userId)
         {
-            var items = context.Orders.Include(x => x.Products).Where(x => x.UserId == userId).ToList();
+            var items = orderR.Get(x => x.UserId == userId, includeProperties: "Products");
             return mapper.Map<IEnumerable<OrderDto>>(items);
         }
     }
