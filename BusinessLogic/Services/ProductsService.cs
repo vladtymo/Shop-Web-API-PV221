@@ -4,7 +4,6 @@ using BusinessLogic.Interfaces;
 using DataAccess.Data;
 using DataAccess.Data.Entities;
 using DataAccess.Repositories;
-using Microsoft.EntityFrameworkCore;
 using Shop_Api_PV221;
 using System;
 using System.Collections.Generic;

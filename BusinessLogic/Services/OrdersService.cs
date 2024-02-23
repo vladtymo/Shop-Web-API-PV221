@@ -5,7 +5,6 @@ using DataAccess.Data;
 using DataAccess.Data.Entities;
 using DataAccess.Repositories;
 using Microsoft.AspNetCore.Identity.UI.Services;
-using Microsoft.EntityFrameworkCore;
 
 namespace BusinessLogic.Services
 {
