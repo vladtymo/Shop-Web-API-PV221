@@ -27,6 +27,9 @@ namespace BusinessLogic.Profiles
             CreateMap<Order, OrderSummaryModel>()
                 .ForMember(x => x.Number, opts => opts.MapFrom(src => src.Id))
                 .ForMember(x => x.UserName, opts => opts.MapFrom(src => src.User.UserName));
+
+            CreateMap<RegisterModel, User>()
+                .ForMember(x => x.UserName, opts => opts.MapFrom(s => s.Email));
         }
     }
 }
