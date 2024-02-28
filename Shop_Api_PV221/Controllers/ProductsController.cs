@@ -1,5 +1,6 @@
 ﻿using BusinessLogic.DTOs;
 using BusinessLogic.Interfaces;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -23,7 +24,9 @@ namespace Shop_Api_PV221.Controllers
             return Ok(productsService.GetAll());
         }
 
-        [Authorize]
+        //[Authorize] // based on cookies
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)] // based on JWT
+
         [HttpGet("{id:int}")]
         public IActionResult Get([FromRoute]int id)
         {

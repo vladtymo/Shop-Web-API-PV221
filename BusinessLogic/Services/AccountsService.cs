@@ -18,14 +18,17 @@ namespace BusinessLogic.Services
         private readonly UserManager<User> userManager;
         private readonly SignInManager<User> signInManager;
         private readonly IMapper mapper;
+        private readonly IJwtService jwtService;
 
         public AccountsService(UserManager<User> userManager,
                                 SignInManager<User> signInManager,
-                                IMapper mapper)
+                                IMapper mapper,
+                                IJwtService jwtService)
         {
             this.userManager = userManager;
             this.signInManager = signInManager;
             this.mapper = mapper;
+            this.jwtService = jwtService;
         }
 
         public async Task Register(RegisterModel model)
@@ -46,7 +49,7 @@ namespace BusinessLogic.Services
                 throw new HttpException(string.Join(" ", result.Errors.Select(x => x.Description)), HttpStatusCode.BadRequest);
         }
 
-        public async Task Login(LoginModel model)
+        public async Task<LoginResponseDto> Login(LoginModel model)
         {
             var user = await userManager.FindByEmailAsync(model.Email);
 
@@ -54,6 +57,12 @@ namespace BusinessLogic.Services
                 throw new HttpException("Invalid user login or password.", HttpStatusCode.BadRequest);
 
             await signInManager.SignInAsync(user, true);
+
+            // generate token
+            return new LoginResponseDto
+            {
+                Token = jwtService.CreateToken(jwtService.GetClaims(user))
+            };
         }
 
         public async Task Logout()
