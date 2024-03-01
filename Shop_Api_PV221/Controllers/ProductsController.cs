@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Shop_Api_PV221.Helpers;
 
 namespace Shop_Api_PV221.Controllers
 {
@@ -26,7 +27,6 @@ namespace Shop_Api_PV221.Controllers
 
         //[Authorize] // based on cookies
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)] // based on JWT
-
         [HttpGet("{id:int}")]
         public IActionResult Get([FromRoute]int id)
         {
@@ -48,6 +48,7 @@ namespace Shop_Api_PV221.Controllers
             return Ok();
         }
 
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = Roles.ADMIN)]
         [HttpDelete("{id:int}")]
         public IActionResult Delete([FromRoute]int id)
         {

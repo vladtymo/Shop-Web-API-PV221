@@ -1,6 +1,7 @@
 ﻿using BusinessLogic.Helpers;
 using BusinessLogic.Interfaces;
 using DataAccess.Data.Entities;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System;
@@ -16,10 +17,12 @@ namespace BusinessLogic.Services
     internal class JwtService : IJwtService
     {
         private readonly IConfiguration configuration;
+        private readonly UserManager<User> userManager;
 
-        public JwtService(IConfiguration configuration)
+        public JwtService(IConfiguration configuration, UserManager<User> userManager)
         {
             this.configuration = configuration;
+            this.userManager = userManager;
         }
 
         public string CreateToken(IEnumerable<Claim> claims)
@@ -47,8 +50,8 @@ namespace BusinessLogic.Services
                 new Claim(ClaimTypes.Email, user.Email),
             };
 
-            //var roles = userManager.GetRolesAsync(user).Result;
-            //claims.AddRange(roles.Select(role => new Claim(ClaimsIdentity.DefaultRoleClaimType, role)));
+            var roles = userManager.GetRolesAsync(user).Result;
+            claims.AddRange(roles.Select(role => new Claim(ClaimsIdentity.DefaultRoleClaimType, role)));
 
             return claims;
         }
