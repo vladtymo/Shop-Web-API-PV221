@@ -1,10 +1,16 @@
 ﻿using BusinessLogic.Helpers;
+using DataAccess.Data.Entities;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
 namespace Shop_Api_PV221
 {
+    public static class Policies
+    {
+        public const string PREMIUM_CLIENT = "PremiumClient";
+        public const string ADULT = "Adult";
+    }
     public static class ServiceExtensions
     {
         public static void AddJWT(this IServiceCollection services, IConfiguration configuration)
@@ -25,6 +31,12 @@ namespace Shop_Api_PV221
                         ClockSkew = TimeSpan.Zero
                     };
                 });
+
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy(Policies.PREMIUM_CLIENT, policy =>
+                    policy.RequireClaim("ClientType", ClientType.Premium.ToString()));
+            });
         }
     }
 }
