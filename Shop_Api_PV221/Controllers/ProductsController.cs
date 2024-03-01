@@ -20,6 +20,7 @@ namespace Shop_Api_PV221.Controllers
         }
 
         [HttpGet("all")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = Policies.ADULT)]
         public IActionResult Get()
         {
             return Ok(productsService.GetAll());

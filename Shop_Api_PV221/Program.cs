@@ -19,6 +19,7 @@ builder.Services.AddEndpointsApiExplorer();
 // TODO: configure swagger with JWT 
 builder.Services.AddSwaggerGen();
 builder.Services.AddJWT(builder.Configuration);
+builder.Services.AddRequirements();
 
 builder.Services.AddDbContext(connStr);
 builder.Services.AddIdentity();
