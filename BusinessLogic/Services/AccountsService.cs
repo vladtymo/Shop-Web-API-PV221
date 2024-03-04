@@ -2,6 +2,7 @@
 using BusinessLogic.DTOs;
 using BusinessLogic.Interfaces;
 using DataAccess.Data.Entities;
+using DataAccess.Repositories;
 using Microsoft.AspNetCore.Identity;
 using Shop_Api_PV221;
 using System;
@@ -19,16 +20,19 @@ namespace BusinessLogic.Services
         private readonly SignInManager<User> signInManager;
         private readonly IMapper mapper;
         private readonly IJwtService jwtService;
+        private readonly IRepository<RefreshToken> refreshTokenR;
 
         public AccountsService(UserManager<User> userManager,
                                 SignInManager<User> signInManager,
                                 IMapper mapper,
-                                IJwtService jwtService)
+                                IJwtService jwtService,
+                                IRepository<RefreshToken> refreshTokenR)
         {
             this.userManager = userManager;
             this.signInManager = signInManager;
             this.mapper = mapper;
             this.jwtService = jwtService;
+            this.refreshTokenR = refreshTokenR;
         }
 
         public async Task Register(RegisterModel model)
@@ -56,18 +60,70 @@ namespace BusinessLogic.Services
             if (user == null || !await userManager.CheckPasswordAsync(user, model.Password))
                 throw new HttpException("Invalid user login or password.", HttpStatusCode.BadRequest);
 
-            await signInManager.SignInAsync(user, true);
+            //await signInManager.SignInAsync(user, true);
 
             // generate token
             return new LoginResponseDto
             {
-                Token = jwtService.CreateToken(jwtService.GetClaims(user))
+                AccessToken = jwtService.CreateToken(jwtService.GetClaims(user)),
+                RefreshToken = CreateRefreshToken(user.Id).Token
             };
         }
 
-        public async Task Logout()
+        private RefreshToken CreateRefreshToken(string userId)
         {
-            await signInManager.SignOutAsync();
+            var refeshToken = jwtService.CreateRefreshToken();
+
+            var refreshTokenEntity = new RefreshToken
+            {
+                Token = refeshToken,
+                UserId = userId,
+                CreationDate = DateTime.UtcNow // Now vs UtcNow
+            };
+
+            refreshTokenR.Insert(refreshTokenEntity);
+            refreshTokenR.Save();
+
+            return refreshTokenEntity;
+        }
+
+        public UserTokens RefreshTokens(UserTokens userTokens)
+        {
+            var refrestToken = refreshTokenR.Get(x => x.Token == userTokens.RefreshToken).FirstOrDefault();
+
+            if (refrestToken == null)
+                throw new HttpException(Errors.InvalidToken, HttpStatusCode.BadRequest);
+
+            var claims = jwtService.GetClaimsFromExpiredToken(userTokens.AccessToken);
+            var newAccessToken = jwtService.CreateToken(claims);
+            var newRefreshToken = jwtService.CreateRefreshToken();
+
+            refrestToken.Token = newRefreshToken;
+
+            // TODO: update creation time
+            refreshTokenR.Update(refrestToken);
+            refreshTokenR.Save();
+
+            var tokens = new UserTokens()
+            {
+                AccessToken = newAccessToken,
+                RefreshToken = newRefreshToken
+            };
+
+            return tokens;
+        }
+
+        public void Logout(string refreshToken)
+        {
+            //await signInManager.SignOutAsync();
+
+            var refrestTokenEntity = refreshTokenR.Get(x => x.Token == refreshToken).FirstOrDefault();
+
+            if (refrestTokenEntity == null)
+                throw new HttpException(Errors.InvalidToken, HttpStatusCode.BadRequest);
+
+            refreshTokenR.Delete(refrestTokenEntity);
+            refreshTokenR.Save();
         }
     }
 }

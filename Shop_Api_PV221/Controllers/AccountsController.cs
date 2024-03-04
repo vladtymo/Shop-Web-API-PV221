@@ -30,10 +30,16 @@ namespace Shop_Api_PV221.Controllers
             return Ok(await accountsService.Login(model));
         }
 
-        [HttpPost("logout")]
-        public async Task<IActionResult> Logout()
+        [HttpPost("refreshTokens")]
+        public IActionResult RefreshTokens(UserTokens tokens)
         {
-            await accountsService.Logout();
+            return Ok(accountsService.RefreshTokens(tokens));
+        }
+
+        [HttpPost("logout")]
+        public IActionResult Logout(LogoutModel model)
+        {
+            accountsService.Logout(model.RefreshToken);
             return Ok();
         }
     }
