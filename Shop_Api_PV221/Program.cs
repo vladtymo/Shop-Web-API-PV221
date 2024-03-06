@@ -1,6 +1,8 @@
 using BusinessLogic;
 using BusinessLogic.Interfaces;
+using BusinessLogic.Services;
 using DataAccess;
+using Hangfire;
 using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.AspNetCore.Identity;
 using Shop_Api_PV221;
@@ -32,6 +34,13 @@ builder.Services.AddCustomServices();
 builder.Services.AddScoped<ICartService, CartService>();
 //builder.Services.AddScoped<IViewRender, ViewRender>();
 
+builder.Services.AddHangfire(config =>
+{
+    config.UseSqlServerStorage(connStr);
+});
+
+builder.Services.AddHangfireServer();
+
 var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())
@@ -53,6 +62,11 @@ app.UseStaticFiles();
 app.UseMiddleware<GlobalErrorHandler>();
 
 app.UseAuthorization();
+
+app.UseHangfireDashboard("/dash");
+
+RecurringJob.AddOrUpdate<AccountsService>("removeExpiredRefreshTokens",
+    service => service.RemoveExpiredRefreshTokens(), Cron.Weekly);
 
 app.MapControllers();
 

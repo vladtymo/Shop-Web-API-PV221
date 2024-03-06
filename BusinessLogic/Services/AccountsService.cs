@@ -15,7 +15,7 @@ using System.Threading.Tasks;
 
 namespace BusinessLogic.Services
 {
-    internal class AccountsService : IAccountsService
+    public class AccountsService : IAccountsService
     {
         private readonly UserManager<User> userManager;
         private readonly SignInManager<User> signInManager;
@@ -124,6 +124,17 @@ namespace BusinessLogic.Services
                 throw new HttpException(Errors.InvalidToken, HttpStatusCode.BadRequest);
 
             refreshTokenR.Delete(refrestTokenEntity);
+            refreshTokenR.Save();
+        }
+
+        public async Task RemoveExpiredRefreshTokens()
+        {
+            var expiredTokens = await refreshTokenR.GetListBySpec(new RefreshTokenSpecs.CreatedBy(jwtService.GetOldestDate()));
+
+            foreach (var i in expiredTokens)
+            {
+                refreshTokenR.Delete(i);
+            }
             refreshTokenR.Save();
         }
     }

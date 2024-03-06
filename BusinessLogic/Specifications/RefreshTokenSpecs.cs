@@ -1,5 +1,6 @@
 ﻿using Ardalis.Specification;
 using DataAccess.Data.Entities;
+using Microsoft.Extensions.Configuration;
 
 namespace BusinessLogic.Specifications
 {
@@ -10,6 +11,14 @@ namespace BusinessLogic.Specifications
             public ByToken(string value)
             {
                 Query.Where(x => x.Token == value);
+            }
+        }
+        internal class CreatedBy : Specification<RefreshToken>
+        {
+            public CreatedBy(DateTime date)
+            {
+
+                Query.Where(x => x.CreationDate < date);
             }
         }
     }
