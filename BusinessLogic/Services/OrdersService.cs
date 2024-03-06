@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using BusinessLogic.DTOs;
 using BusinessLogic.Interfaces;
+using BusinessLogic.Specifications;
 using DataAccess.Data;
 using DataAccess.Data.Entities;
 using DataAccess.Repositories;
@@ -35,13 +36,13 @@ namespace BusinessLogic.Services
         public async Task Create(string userId)
         {
             var ids = cartService.GetProductIds();
-            var products = productR.Get(x => ids.Contains(x.Id)).ToList();
+            var products = await productR.GetListBySpec(new ProductSpecs.ByIds(ids));
 
             var order = new Order()
             {
                 Date = DateTime.Now,
                 UserId = userId,
-                Products = products,
+                Products = products.ToList(),
                 TotalPrice = products.Sum(x => x.Price),
             };
 
@@ -57,9 +58,9 @@ namespace BusinessLogic.Services
             //await emailSender.SendEmailAsync("tymo.vlad@gmail.com", $"Order #{orderSummary.Number}", html);
         }
 
-        public IEnumerable<OrderDto> GetAllByUser(string userId)
+        public async Task<IEnumerable<OrderDto>> GetAllByUser(string userId)
         {
-            var items = orderR.Get(x => x.UserId == userId, includeProperties: "Products");
+            var items = await orderR.GetListBySpec(new OrderSpecs.ByUser(userId));
             return mapper.Map<IEnumerable<OrderDto>>(items);
         }
     }

@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using BusinessLogic.DTOs;
 using BusinessLogic.Interfaces;
+using BusinessLogic.Specifications;
 using DataAccess.Data;
 using DataAccess.Data.Entities;
 using DataAccess.Repositories;
@@ -41,7 +42,7 @@ namespace BusinessLogic.Services
             if (id < 0) throw new HttpException(Errors.IdMustPositive, HttpStatusCode.BadRequest);
 
             // delete product by id
-            var product = productsR.GetByID(id);
+            var product = productsR.GetById(id);
 
             if (product == null) throw new HttpException(Errors.ProductNotFound, HttpStatusCode.NotFound);
 
@@ -55,11 +56,11 @@ namespace BusinessLogic.Services
             productsR.Save();
         }
 
-        public ProductDto? Get(int id)
+        public async Task<ProductDto?> Get(int id)
         {
             if (id < 0) throw new HttpException(Errors.IdMustPositive, HttpStatusCode.BadRequest);
 
-            var item = productsR.GetByID(id);
+            var item = await productsR.GetItemBySpec(new ProductSpecs.ById(id));
             if (item == null) throw new HttpException(Errors.ProductNotFound, HttpStatusCode.NotFound);
 
             // load related entity
@@ -85,18 +86,18 @@ namespace BusinessLogic.Services
             return dto;
         }
 
-        public IEnumerable<ProductDto> Get(IEnumerable<int> ids)
+        public async Task<IEnumerable<ProductDto>> Get(IEnumerable<int> ids)
         {
             //return mapper.Map<List<ProductDto>>(context.Products
             //    .Include(x => x.Category)
             //    .Where(x => ids.Contains(x.Id))
             //    .ToList());
-            return mapper.Map<List<ProductDto>>(productsR.Get(x => ids.Contains(x.Id), includeProperties: "Category"));
+            return mapper.Map<List<ProductDto>>(await productsR.GetListBySpec(new ProductSpecs.ByIds(ids)));
         }
 
-        public IEnumerable<ProductDto> GetAll()
+        public async Task<IEnumerable<ProductDto>> GetAll()
         {
-            return mapper.Map<List<ProductDto>>(productsR.GetAll());
+            return mapper.Map<List<ProductDto>>(await productsR.GetListBySpec(new ProductSpecs.All()));
         }
 
         public IEnumerable<CategoryDto> GetAllCategories()

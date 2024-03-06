@@ -21,17 +21,17 @@ namespace Shop_Api_PV221.Controllers
 
         [HttpGet("all")]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = Policies.ADULT)]
-        public IActionResult Get()
+        public async Task<IActionResult> Get()
         {
-            return Ok(productsService.GetAll());
+            return Ok(await productsService.GetAll());
         }
 
         //[Authorize] // based on cookies
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)] // based on JWT
         [HttpGet("{id:int}")]
-        public IActionResult Get([FromRoute]int id)
+        public async Task<IActionResult> Get([FromRoute]int id)
         {
-            return Ok(productsService.Get(id));
+            return Ok(await productsService.Get(id));
         }
 
         [HttpPost]

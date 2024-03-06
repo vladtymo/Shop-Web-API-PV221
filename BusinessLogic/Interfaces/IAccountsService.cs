@@ -6,8 +6,8 @@ namespace BusinessLogic.Interfaces
     {
         Task Register(RegisterModel model);
         Task<LoginResponseDto> Login(LoginModel model);
-        void Logout(string refreshToken);
-        UserTokens RefreshTokens(UserTokens tokens);
+        Task Logout(string refreshToken);
+        Task<UserTokens> RefreshTokens(UserTokens tokens);
 
         //Task<ResetToken> GenerageResetToken(string email);
         //Task ResetPassword(ResetPasswordModel model);

@@ -38,10 +38,10 @@ namespace Shop_Api_PV221.Services
             SaveCartItems(ids);
         }
 
-        public IEnumerable<ProductDto> GetProducts()
+        public async Task<IEnumerable<ProductDto>> GetProducts()
         {
             var ids = GetCartItems();
-            return productsService.Get(ids);
+            return await productsService.Get(ids);
         }
 
         public void Remove(int id)
