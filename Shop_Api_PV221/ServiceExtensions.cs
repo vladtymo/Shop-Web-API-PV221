@@ -1,5 +1,6 @@
 ﻿using BusinessLogic.Helpers;
 using DataAccess.Data.Entities;
+using Hangfire;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.IdentityModel.Tokens;
@@ -15,6 +16,15 @@ namespace Shop_Api_PV221
     }
     public static class ServiceExtensions
     {
+        public static void AddHangfire(this IServiceCollection services, string connectionString)
+        {
+            services.AddHangfire(config =>
+            {
+                config.UseSqlServerStorage(connectionString);
+            });
+
+            services.AddHangfireServer();
+        }
         public static void AddRequirements(this IServiceCollection services)
         {
             services.AddSingleton<IAuthorizationHandler, MinimumAgeHandler>();

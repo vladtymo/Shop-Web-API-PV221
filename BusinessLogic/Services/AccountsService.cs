@@ -129,7 +129,8 @@ namespace BusinessLogic.Services
 
         public async Task RemoveExpiredRefreshTokens()
         {
-            var expiredTokens = await refreshTokenR.GetListBySpec(new RefreshTokenSpecs.CreatedBy(jwtService.GetOldestDate()));
+            var lastDate = jwtService.GetLastValidRefreshTokenDate();
+            var expiredTokens = await refreshTokenR.GetListBySpec(new RefreshTokenSpecs.CreatedBy(lastDate));
 
             foreach (var i in expiredTokens)
             {

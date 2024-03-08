@@ -34,12 +34,8 @@ builder.Services.AddCustomServices();
 builder.Services.AddScoped<ICartService, CartService>();
 //builder.Services.AddScoped<IViewRender, ViewRender>();
 
-builder.Services.AddHangfire(config =>
-{
-    config.UseSqlServerStorage(connStr);
-});
-
-builder.Services.AddHangfireServer();
+// hangfire
+builder.Services.AddHangfire(connStr);
 
 var app = builder.Build();
 
@@ -64,9 +60,7 @@ app.UseMiddleware<GlobalErrorHandler>();
 app.UseAuthorization();
 
 app.UseHangfireDashboard("/dash");
-
-RecurringJob.AddOrUpdate<AccountsService>("removeExpiredRefreshTokens",
-    service => service.RemoveExpiredRefreshTokens(), Cron.Weekly);
+JobConfigurator.AddJobs();
 
 app.MapControllers();
 

@@ -9,6 +9,8 @@ namespace BusinessLogic.Interfaces
         Task Logout(string refreshToken);
         Task<UserTokens> RefreshTokens(UserTokens tokens);
 
+        Task RemoveExpiredRefreshTokens();
+
         //Task<ResetToken> GenerageResetToken(string email);
         //Task ResetPassword(ResetPasswordModel model);
     }
