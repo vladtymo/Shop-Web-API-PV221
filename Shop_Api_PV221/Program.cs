@@ -57,6 +57,13 @@ app.UseStaticFiles();
 
 app.UseMiddleware<GlobalErrorHandler>();
 
+app.UseCors(options =>
+{
+    options.WithOrigins("http://localhost:4200", "http://localhost:3000")
+        .AllowAnyMethod()
+        .AllowAnyHeader();
+});
+
 app.UseAuthorization();
 
 app.UseHangfireDashboard("/dash");
