@@ -4,20 +4,20 @@ using Microsoft.Extensions.Configuration;
 
 namespace DataAccess.Data
 {
-    public class SampleContextFactory : IDesignTimeDbContextFactory<ShopDbContext>
-    {
-        public ShopDbContext CreateDbContext(string[] args)
-        {
-            var optionsBuilder = new DbContextOptionsBuilder<ShopDbContext>();
+    //public class SampleContextFactory : IDesignTimeDbContextFactory<ShopDbContext>
+    //{
+    //    public ShopDbContext CreateDbContext(string[] args)
+    //    {
+    //        var optionsBuilder = new DbContextOptionsBuilder<ShopDbContext>();
 
-            ConfigurationBuilder builder = new ConfigurationBuilder();
-            builder.SetBasePath(Directory.GetCurrentDirectory());
-            builder.AddJsonFile("appsettings.json");
-            IConfigurationRoot config = builder.Build();
+    //        ConfigurationBuilder builder = new ConfigurationBuilder();
+    //        builder.SetBasePath(Directory.GetCurrentDirectory());
+    //        builder.AddJsonFile("appsettings.json");
+    //        IConfigurationRoot config = builder.Build();
 
-            string? connectionString = config.GetConnectionString("LocalDb");
-            optionsBuilder.UseSqlServer(connectionString);
-            return new ShopDbContext(optionsBuilder.Options);
-        }
-    }
+    //        string? connectionString = config.GetConnectionString("AzureDb");
+    //        optionsBuilder.UseSqlServer(connectionString);
+    //        return new ShopDbContext(optionsBuilder.Options);
+    //    }
+    //}
 }
