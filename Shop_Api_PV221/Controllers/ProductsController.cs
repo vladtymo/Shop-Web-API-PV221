@@ -57,5 +57,11 @@ namespace Shop_Api_PV221.Controllers
             productsService.Delete(id);
             return Ok();
         }
+
+        [HttpGet("categories")]
+        public IActionResult GetCategories()
+        {
+            return Ok(productsService.GetAllCategories());
+        }
     }
 }
