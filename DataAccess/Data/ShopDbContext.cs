@@ -11,7 +11,10 @@ namespace DataAccess.Data
         //public DbSet<Category> Categories { get; set; }
         //public DbSet<Order> Orders { get; set; }
 
-        public ShopDbContext(DbContextOptions options) : base(options) { }
+        public ShopDbContext(DbContextOptions options) : base(options) 
+        {
+            Database.Migrate();
+        }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
