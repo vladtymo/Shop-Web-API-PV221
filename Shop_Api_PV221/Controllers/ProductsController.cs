@@ -44,13 +44,14 @@ namespace Shop_Api_PV221.Controllers
 
 
         [HttpPut]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public IActionResult Edit([FromBody] ProductDto model)
         {
             productsService.Edit(model);
             return Ok();
         }
 
-        //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = Roles.ADMIN)]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = Roles.ADMIN)]
         [HttpDelete("{id:int}")]
         public IActionResult Delete([FromRoute]int id)
         {
