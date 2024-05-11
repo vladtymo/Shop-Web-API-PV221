@@ -59,7 +59,7 @@ app.UseMiddleware<GlobalErrorHandler>();
 
 app.UseCors(options =>
 {
-    options.WithOrigins("http://localhost:4200", "http://localhost:3000")
+    options.WithOrigins("http://localhost:4200", "http://localhost:3000", "https://yellow-pond-03cd86610.5.azurestaticapps.net")
         .AllowAnyMethod()
         .AllowAnyHeader();
 });
