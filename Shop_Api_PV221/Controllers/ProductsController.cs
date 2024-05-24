@@ -45,9 +45,9 @@ namespace Shop_Api_PV221.Controllers
 
         [HttpPut]
         //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        public IActionResult Edit([FromBody] ProductDto model)
+        public async Task<IActionResult> Edit([FromForm] EditProductModel model)
         {
-            productsService.Edit(model);
+            await productsService.Edit(model);
             return Ok();
         }
 

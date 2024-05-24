@@ -56,8 +56,14 @@ namespace BusinessLogic.Services
             productsR.Save();
         }
 
-        public void Edit(ProductDto product)
+        public async Task Edit(EditProductModel product)
         {
+            if (product.NewImage != null)
+            {
+                await fileService.DeleteProductImage(product.ImageUrl);
+                product.ImageUrl = await fileService.SaveProductImage(product.NewImage);
+            }
+
             productsR.Update(mapper.Map<Product>(product));
             productsR.Save();
         }

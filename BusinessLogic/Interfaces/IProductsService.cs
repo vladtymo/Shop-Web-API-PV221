@@ -9,7 +9,7 @@ namespace BusinessLogic.Interfaces
         Task<ProductDto?> Get(int id);
         IEnumerable<CategoryDto> GetAllCategories();
         void Create(CreateProductModel product);
-        void Edit(ProductDto product);
+        Task Edit(EditProductModel product);
         Task Delete(int id);
     }
 }
