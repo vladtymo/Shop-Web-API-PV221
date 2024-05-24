@@ -64,5 +64,12 @@ namespace Shop_Api_PV221.Controllers
         {
             return Ok(productsService.GetAllCategories());
         }
+
+        [HttpDelete("cleanup")]
+        public async Task<IActionResult> CleanUp()
+        {
+            await productsService.CleanUpProductImages();
+            return Ok();
+        }
     }
 }

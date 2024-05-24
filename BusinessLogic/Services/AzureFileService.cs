@@ -32,6 +32,23 @@ namespace BusinessLogic.Services
             await blob.DeleteIfExistsAsync();
         }
 
+        public async Task DeleteProductImageExcept(string[] files)
+        {
+            var client = new BlobContainerClient(connectionString, containerName);
+            var blobs = client.GetBlobs();
+
+            files = files.Select(x => Path.GetFileName(x)).ToArray();
+
+            foreach (var item in blobs)
+            {
+                if (!files.Contains(item.Name))
+                {
+                    var blob = client.GetBlobClient(item.Name);
+                    await blob.DeleteIfExistsAsync();
+                }
+            }
+        }
+
         public async Task<string> SaveProductImage(IFormFile file)
         {
             var client = new BlobContainerClient(connectionString, containerName);

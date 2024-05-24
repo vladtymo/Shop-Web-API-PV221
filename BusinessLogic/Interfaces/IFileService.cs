@@ -6,5 +6,6 @@ namespace BusinessLogic.Interfaces
     {
         Task<string> SaveProductImage(IFormFile file);
         Task DeleteProductImage(string path);
+        Task DeleteProductImageExcept(string[] files);
     }
 }

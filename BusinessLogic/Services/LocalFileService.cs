@@ -19,6 +19,11 @@ namespace BusinessLogic.Services
             throw new NotImplementedException();
         }
 
+        public Task DeleteProductImageExcept(string[] files)
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task<string> SaveProductImage(IFormFile file)
         {
             // get image destination path

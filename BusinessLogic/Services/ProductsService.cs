@@ -35,6 +35,12 @@ namespace BusinessLogic.Services
             this.fileService = fileService;
         }
 
+        public async Task CleanUpProductImages()
+        {
+            var imagePaths = productsR.GetAll().Select(x => x.ImageUrl).ToArray();
+            await fileService.DeleteProductImageExcept(imagePaths);
+        }
+
         public void Create(CreateProductModel product)
         {
             productsR.Insert(mapper.Map<Product>(product));

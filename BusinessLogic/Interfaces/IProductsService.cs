@@ -11,5 +11,7 @@ namespace BusinessLogic.Interfaces
         void Create(CreateProductModel product);
         Task Edit(EditProductModel product);
         Task Delete(int id);
+
+        Task CleanUpProductImages();
     }
 }
