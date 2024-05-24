@@ -20,15 +20,19 @@ namespace BusinessLogic.Services
         private readonly IMapper mapper;
         private readonly IRepository<Product> productsR;
         private readonly IRepository<Category> categoriesR;
+        private readonly IFileService fileService;
+
         //private readonly ShopDbContext context;
 
         public ProductsService(IMapper mapper, 
                                 IRepository<Product> productsR,
-                                IRepository<Category> categoriesR)
+                                IRepository<Category> categoriesR,
+                                IFileService fileService)
         {
             this.mapper = mapper;
             this.productsR = productsR;
             this.categoriesR = categoriesR;
+            this.fileService = fileService;
         }
 
         public void Create(CreateProductModel product)
@@ -37,7 +41,7 @@ namespace BusinessLogic.Services
             productsR.Save();
         }
 
-        public void Delete(int id)
+        public async Task Delete(int id)
         {
             if (id < 0) throw new HttpException(Errors.IdMustPositive, HttpStatusCode.BadRequest);
 
@@ -45,6 +49,8 @@ namespace BusinessLogic.Services
             var product = productsR.GetById(id);
 
             if (product == null) throw new HttpException(Errors.ProductNotFound, HttpStatusCode.NotFound);
+
+            await fileService.DeleteProductImage(product.ImageUrl);
 
             productsR.Delete(product);
             productsR.Save();

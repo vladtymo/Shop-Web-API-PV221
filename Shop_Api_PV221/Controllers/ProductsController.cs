@@ -53,9 +53,9 @@ namespace Shop_Api_PV221.Controllers
 
         //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = Roles.ADMIN)]
         [HttpDelete("{id:int}")]
-        public IActionResult Delete([FromRoute]int id)
+        public async Task<IActionResult> Delete([FromRoute]int id)
         {
-            productsService.Delete(id);
+            await productsService.Delete(id);
             return Ok();
         }
 

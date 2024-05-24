@@ -13,7 +13,7 @@ namespace DataAccess.Data
 
         public ShopDbContext(DbContextOptions options) : base(options) 
         {
-            Database.Migrate();
+            //Database.Migrate();
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

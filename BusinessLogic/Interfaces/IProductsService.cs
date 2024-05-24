@@ -10,6 +10,6 @@ namespace BusinessLogic.Interfaces
         IEnumerable<CategoryDto> GetAllCategories();
         void Create(CreateProductModel product);
         void Edit(ProductDto product);
-        void Delete(int id);
+        Task Delete(int id);
     }
 }
